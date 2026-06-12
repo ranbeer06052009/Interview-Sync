@@ -12,9 +12,8 @@ WORKDIR /app
 COPY --from=builder /server /server
 
 # Note: For Option B local execution to work in Docker, 
-# you'll need compilers installed here (e.g., RUN apk add python3 nodejs g++ openjdk11).
-# We are including Python and Node.js for standard execution support.
-RUN apk add --no-cache python3 nodejs
+# we need to install the compilers in the Alpine container.
+RUN apk add --no-cache python3 nodejs g++ openjdk17
 
 EXPOSE 8080
 ENTRYPOINT ["/server"]

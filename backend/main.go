@@ -437,10 +437,14 @@ func handleExecute(w http.ResponseWriter, r *http.Request) {
 		var compileErr bytes.Buffer
 		compileCmd.Stderr = &compileErr
 		if err := compileCmd.Run(); err != nil {
+			errStr := compileErr.String()
+			if errStr == "" {
+				errStr = err.Error()
+			}
 			json.NewEncoder(w).Encode(map[string]interface{}{
 				"run": map[string]string{
 					"stdout": "",
-					"stderr": "Compilation Error:\n" + compileErr.String(),
+					"stderr": "Compilation Error:\n" + errStr,
 				},
 			})
 			return
@@ -454,10 +458,14 @@ func handleExecute(w http.ResponseWriter, r *http.Request) {
 		var compileErr bytes.Buffer
 		compileCmd.Stderr = &compileErr
 		if err := compileCmd.Run(); err != nil {
+			errStr := compileErr.String()
+			if errStr == "" {
+				errStr = err.Error()
+			}
 			json.NewEncoder(w).Encode(map[string]interface{}{
 				"run": map[string]string{
 					"stdout": "",
-					"stderr": "Compilation Error:\n" + compileErr.String(),
+					"stderr": "Compilation Error:\n" + errStr,
 				},
 			})
 			return
