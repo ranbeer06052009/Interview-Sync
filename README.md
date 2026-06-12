@@ -13,6 +13,15 @@
 - **Anonymity Mode:** A toggle designed for blind interviews that masks PII (Personally Identifiable Information) with pseudonyms to prevent hiring bias.
 - **Side-by-Side I/O:** Dedicated standard input and output text panes for algorithmic testing.
 
+## 🧠 Core CS Concepts Applied
+
+This platform was built from scratch to demonstrate a deep understanding of core Computer Science fundamentals:
+
+- **Data Structures & Algorithms (DSA):** The custom Operational Transformation (OT) engine uses highly optimized array splicing and index shifting algorithms to resolve concurrent document edits in $O(N)$ time, avoiding index drift and race conditions during real-time collaboration.
+- **Database Management Systems (DBMS):** Implemented an **Event Sourcing** architecture using PostgreSQL. Instead of overriding the final document state, the database logs an append-only timeline of granular keystroke events, ensuring ACID compliance while enabling the robust "Time-Travel" feature.
+- **Computer Networks (CN):** Bypassed standard HTTP stateless polling in favor of a full-duplex TCP-based **WebSocket Hub** built in Go. This facilitates zero-latency bidirectional broadcasting across distributed client sessions.
+- **Operating Systems (OS):** Engineered a Remote Code Execution (RCE) sandbox leveraging OS-level process isolation via Docker and Go's `os/exec`. Implemented dynamic system pipes to stream raw `stdin` and safely capture `stdout`/`stderr` buffer streams from isolated compiler child processes.
+
 ## 🛠️ Tech Stack
 
 ### Frontend
