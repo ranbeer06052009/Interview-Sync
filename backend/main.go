@@ -420,14 +420,40 @@ func handleExecute(w http.ResponseWriter, r *http.Request) {
 		filePath := filepath.Join(tmpDir, "main.py")
 		os.WriteFile(filePath, []byte(req.Code), 0644)
 		cmd = exec.Command("python", filePath)
-	} else if lang == "javascript" || lang == "typescript" {
+	} else if lang == "javascript" {
 		filePath := filepath.Join(tmpDir, "main.js")
 		os.WriteFile(filePath, []byte(req.Code), 0644)
 		cmd = exec.Command("node", filePath)
+	} else if lang == "typescript" {
+		filePath := filepath.Join(tmpDir, "main.ts")
+		os.WriteFile(filePath, []byte(req.Code), 0644)
+		cmd = exec.Command("ts-node", filePath)
 	} else if lang == "go" {
 		filePath := filepath.Join(tmpDir, "main.go")
 		os.WriteFile(filePath, []byte(req.Code), 0644)
 		cmd = exec.Command("go", "run", filePath)
+	} else if lang == "rust" {
+		filePath := filepath.Join(tmpDir, "main.rs")
+		os.WriteFile(filePath, []byte(req.Code), 0644)
+		outExe := filepath.Join(tmpDir, "main")
+		
+		compileCmd := exec.Command("rustc", filePath, "-o", outExe)
+		var compileErr bytes.Buffer
+		compileCmd.Stderr = &compileErr
+		if err := compileCmd.Run(); err != nil {
+			errStr := compileErr.String()
+			if errStr == "" {
+				errStr = err.Error()
+			}
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"run": map[string]string{
+					"stdout": "",
+					"stderr": "Compilation Error:\n" + errStr,
+				},
+			})
+			return
+		}
+		cmd = exec.Command(outExe)
 	} else if lang == "cpp" || lang == "c++" {
 		filePath := filepath.Join(tmpDir, "main.cpp")
 		os.WriteFile(filePath, []byte(req.Code), 0644)
@@ -471,9 +497,14 @@ func handleExecute(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		cmd = exec.Command("java", "-cp", tmpDir, "Main")
+	} else if lang == "html" || lang == "css" {
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"message": "HTML and CSS are markup/styling languages and cannot be executed in a standard IO terminal. You can use this mode for syntax-highlighted collaboration.",
+		})
+		return
 	} else {
 		json.NewEncoder(w).Encode(map[string]interface{}{
-			"message": "Local execution currently only supports Python, JavaScript, Go, C++, and Java. Install compilers and map them in main.go to support more.",
+			"message": "Local execution currently supports Python, JavaScript, TypeScript, Go, C++, Rust, and Java.",
 		})
 		return
 	}

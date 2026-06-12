@@ -13,7 +13,8 @@ COPY --from=builder /server /server
 
 # Note: For Option B local execution to work in Docker, 
 # we need to install the compilers in the Alpine container.
-RUN apk add --no-cache python3 nodejs g++ openjdk17
+RUN apk add --no-cache python3 nodejs npm g++ openjdk17 rust
+RUN npm install -g typescript ts-node
 
 EXPOSE 8080
 ENTRYPOINT ["/server"]
