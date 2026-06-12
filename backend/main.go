@@ -492,11 +492,21 @@ func handleExecute(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func handleRoot(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte(`{"status": "online", "message": "InterviewSync Go WebSocket Engine is running!"}`))
+}
+
 func main() {
 	go initDB()
 	
 	go runHub()
 
+	http.HandleFunc("/", handleRoot)
 	http.HandleFunc("/ws", handleWebSocket)
 	http.HandleFunc("/api/time-travel", handleTimeTravel)
 	http.HandleFunc("/api/version", handleGetVersion) 
